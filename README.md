@@ -4,18 +4,23 @@ A professional web application for calculating **Mean Kinetic Temperature (MKT)*
 
 ## 📋 Table of Contents
 
--   [Overview](#overview)
--   [Features](#features)
--   [Tech Stack](#tech-stack)
--   [Prerequisites](#prerequisites)
--   [Installation](#installation)
--   [Quick Start](#quick-start)
--   [Docker Setup](#docker-setup)
--   [Usage](#usage)
--   [API Documentation](#api-documentation)
--   [Testing](#testing)
--   [Contributing](#contributing)
--   [License](#license)
+-   [Overview](#-overview)
+-   [Features](#-features)
+-   [Tech Stack](#-tech-stack)
+-   [Prerequisites](#-prerequisites)
+-   [Installation](#-installation)
+-   [Quick Start](#-quick-start)
+-   [Docker Setup](#-docker-setup)
+-   [Usage](#-usage)
+-   [Supported File Formats](#-supported-file-formats)
+-   [API Documentation](#-api-documentation)
+-   [Testing](#-testing)
+-   [Current Status & Recent Updates](#-current-status--recent-updates)
+-   [Development Commands](#-development-commands)
+-   [Project Structure](#-project-structure)
+-   [Key Features Explained](#-key-features-explained)
+-   [Production Deployment](#-production-deployment)
+-   [License](#-license)
 
 ## 🔬 Overview
 
@@ -623,31 +628,9 @@ symfony console cache:warmup --env=prod
 composer dump-autoload --optimize --no-dev
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### **Development Guidelines**
-
--   Follow PSR-12 coding standards
--   Write tests for new features
--   Update documentation as needed
--   Use meaningful commit messages
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
--   Symfony community for the excellent framework
--   Chart.js for beautiful visualizations
--   Bootstrap team for responsive design components
--   PostgreSQL community for the robust database
 
 ---
 
