@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}About MKT - Mean Kinetic Temperature{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary">Mean Kinetic Temperature</h1>
+                <p class="lead">Understanding the science behind pharmaceutical temperature analysis</p>
+            </div>
+
+            <!-- What is MKT -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">🌡️ What is Mean Kinetic Temperature?</h3>
+                    <p>
+                        Mean Kinetic Temperature (MKT) is a simplified way of expressing the overall effect of temperature 
+                        fluctuations during storage or transport on the degradation of drugs and pharmaceutical products. 
+                        It's essentially a "smart average" that gives more weight to higher temperatures because they cause 
+                        more damage to pharmaceutical products.
+                    </p>
+                    <p>
+                        Unlike simple arithmetic mean, MKT considers the Arrhenius equation and the fact that chemical 
+                        reaction rates (including degradation) increase exponentially with temperature increases.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mathematical Formula -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">🧮 Mathematical Formula</h3>
+                    <div class="bg-light p-4 rounded mb-3">
+                        <h5 class="text-center mb-3">MKT = -ΔH/R × (1/ln(Σ(e^(-ΔH/R × 1/T_i))/n))</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Where:</h6>
+                            <ul>
+                                <li><strong>MKT</strong> = Mean Kinetic Temperature (°C)</li>
+                                <li><strong>ΔH</strong> = Activation Energy (kJ/mol)</li>
+                                <li><strong>R</strong> = Gas Constant (8.314 J/(mol·K))</li>
+                                <li><strong>T_i</strong> = Temperature reading in Kelvin</li>
+                                <li><strong>n</strong> = Number of temperature readings</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Standard Values:</h6>
+                            <ul>
+                                <li><strong>Activation Energy:</strong> 83.144 kJ/mol</li>
+                                <li><strong>Gas Constant:</strong> 8.314 J/(mol·K)</li>
+                                <li><strong>Temperature Unit:</strong> Kelvin (K = °C + 273.15)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why MKT Matters -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">💊 Why MKT Matters in Pharmaceuticals</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Regulatory Compliance</h5>
+                            <ul>
+                                <li>Required by WHO, FDA, and ICH guidelines</li>
+                                <li>Essential for drug stability studies</li>
+                                <li>Critical for supply chain validation</li>
+                                <li>Mandatory for controlled temperature shipping</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Quality Assurance</h5>
+                            <ul>
+                                <li>Predicts drug potency loss</li>
+                                <li>Validates cold chain integrity</li>
+                                <li>Supports shelf-life calculations</li>
+                                <li>Ensures patient safety</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practical Examples -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">📊 Practical Examples</h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5>Scenario A</h5>
+                                    <p class="mb-1">Constant Temperature</p>
+                                    <strong>25°C for 24 hours</strong>
+                                    <hr>
+                                    <p class="text-primary"><strong>MKT = 25°C</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5>Scenario B</h5>
+                                    <p class="mb-1">Temperature Fluctuation</p>
+                                    <strong>20°C and 30°C (alternating)</strong>
+                                    <hr>
+                                    <p class="text-warning"><strong>MKT ≈ 25.3°C</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5>Scenario C</h5>
+                                    <p class="mb-1">Temperature Spike</p>
+                                    <strong>25°C with brief 40°C spike</strong>
+                                    <hr>
+                                    <p class="text-danger"><strong>MKT ≈ 27.8°C</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Key Insight:</strong> Notice how temperature spikes have a disproportionate effect on MKT. 
+                        A brief exposure to high temperature can significantly impact the overall MKT value, 
+                        which is why cold chain monitoring is so critical.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">🔬 Common Applications</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h5>🚚 Cold Chain Logistics</h5>
+                            <ul>
+                                <li>Vaccine transport monitoring</li>
+                                <li>Insulin and biologics shipping</li>
+                                <li>Temperature-sensitive drug distribution</li>
+                                <li>Warehouse environmental validation</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h5>🏭 Manufacturing & Storage</h5>
+                            <ul>
+                                <li>Stability testing programs</li>
+                                <li>Environmental chamber validation</li>
+                                <li>Warehouse qualification</li>
+                                <li>Shelf-life extension studies</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h5>🧪 Research & Development</h5>
+                            <ul>
+                                <li>Drug formulation studies</li>
+                                <li>Accelerated aging tests</li>
+                                <li>Packaging validation</li>
+                                <li>Climate zone analysis</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h5>📋 Regulatory Submissions</h5>
+                            <ul>
+                                <li>FDA drug applications</li>
+                                <li>WHO prequalification</li>
+                                <li>EMA marketing authorizations</li>
+                                <li>ICH stability guidelines compliance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Format Support -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">📁 Supported Data Formats</h3>
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-light p-3 rounded">
+                                <h2 class="text-success">📊</h2>
+                                <h5>CSV</h5>
+                                <p class="small text-muted">Comma-separated values with timestamp and temperature columns</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-light p-3 rounded">
+                                <h2 class="text-info">📋</h2>
+                                <h5>JSON</h5>
+                                <p class="small text-muted">Structured data with reading objects containing timestamp and temperature</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-light p-3 rounded">
+                                <h2 class="text-warning">📄</h2>
+                                <h5>XML</h5>
+                                <p class="small text-muted">Hierarchical markup with temperature measurement elements</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-light p-3 rounded">
+                                <h2 class="text-secondary">📝</h2>
+                                <h5>YAML</h5>
+                                <p class="small text-muted">Human-readable data serialization with nested temperature data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Get Started -->
+            <div class="text-center">
+                <h3 class="mb-4">Ready to Calculate MKT?</h3>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ path('app_dataset_upload') }}" class="btn btn-primary btn-lg me-md-2">
+                        📁 Upload Your Data
+                    </a>
+                    <a href="{{ path('app_dataset_index') }}" class="btn btn-outline-primary btn-lg">
+                        📊 View Examples
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

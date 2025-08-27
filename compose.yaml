@@ -1,0 +1,88 @@
+services:
+  # Symfony Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    environment:
+      DATABASE_URL: "postgresql://mkt_user:mkt_password@database:5432/mkt_calculator?serverVersion=16&charset=utf8"
+      MAILER_DSN: "smtp://mailpit:1025"
+      APP_ENV: dev
+      APP_DEBUG: 1
+    volumes:
+      - ./public/uploads:/var/www/html/public/uploads
+      - ./var:/var/www/html/var
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - mkt-network
+
+  ###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mkt_calculator}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mkt_password}
+      POSTGRES_USER: ${POSTGRES_USER:-mkt_user}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "${POSTGRES_DB:-mkt_calculator}",
+          "-U",
+          "${POSTGRES_USER:-mkt_user}",
+        ]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+    networks:
+      - mkt-network
+  ###< doctrine/doctrine-bundle ###
+
+  # Database administration interface
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    depends_on:
+      - database
+    networks:
+      - mkt-network
+
+  # Email testing service
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATA_FILE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    volumes:
+      - mailpit_data:/data
+    networks:
+      - mkt-network
+
+volumes:
+  ###> doctrine/doctrine-bundle ###
+  database_data:
+  ###< doctrine/doctrine-bundle ###
+  mailpit_data:
+
+networks:
+  mkt-network:
+    driver: bridge

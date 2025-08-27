@@ -1,0 +1,434 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ dataset.name }} - Dataset Details{% endblock %}
+
+{% block body %}
+<div class="container py-5" id="dataset-detail-app">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_dataset_index') }}">Datasets</a></li>
+                    <li class="breadcrumb-item active">{{ dataset.name }}</li>
+                </ol>
+            </nav>
+            <h2>📊 {{ dataset.name }}</h2>
+            {% if dataset.description %}
+                <p class="text-muted">{{ dataset.description }}</p>
+            {% endif %}
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Actions
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <form method="post" action="{{ path('app_dataset_calculate', {id: dataset.id}) }}" class="d-inline">
+                        <button type="submit" class="dropdown-item">
+                            🔄 Recalculate MKT
+                        </button>
+                    </form>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="{{ path('api_dataset_export', {id: dataset.id}) }}?format=csv">
+                        📊 Export CSV
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ path('api_dataset_export', {id: dataset.id}) }}?format=json">
+                        📋 Export JSON
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" action="{{ path('app_dataset_delete', {id: dataset.id}) }}" 
+                          onsubmit="return confirm('Are you sure you want to delete this dataset?')">
+                        <button type="submit" class="dropdown-item text-danger">
+                            🗑️ Delete Dataset
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">MKT Value</h5>
+                    <h2 class="display-6 fw-bold">
+                        {% if dataset.mktValue %}
+                            {{ dataset.mktValue|number_format(4) }}°C
+                        {% else %}
+                            <span class="text-warning">Not calculated</span>
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Temperature Readings</h5>
+                    <h2 class="display-6 fw-bold">{{ dataset.temperatureReadingsCount ?? 0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Average Temp</h5>
+                    <h2 class="display-6 fw-bold">
+                        {% if dataset.avgTemperature %}
+                            {{ dataset.avgTemperature|number_format(2) }}°C
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Temperature Range</h5>
+                    <h2 class="display-6 fw-bold small">
+                        {% if dataset.minTemperature and dataset.maxTemperature %}
+                            {{ dataset.minTemperature|number_format(1) }}°C<br>
+                            <small>to</small><br>
+                            {{ dataset.maxTemperature|number_format(1) }}°C
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Analysis -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🌡️ Temperature Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="temperatureChart" class="temperature-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">📈 Statistical Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Count:</strong> {{ statistics.count ?? 'N/A' }} readings
+                    </div>
+                    <div class="mb-3">
+                        <strong>Minimum:</strong> 
+                        {% if statistics.min is defined %}
+                            {{ statistics.min|number_format(2) }}°C
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Maximum:</strong> 
+                        {% if statistics.max is defined %}
+                            {{ statistics.max|number_format(2) }}°C
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Average:</strong> 
+                        {% if statistics.average is defined %}
+                            {{ statistics.average|number_format(2) }}°C
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Standard Deviation:</strong> 
+                        {% if statistics.standardDeviation is defined %}
+                            {{ statistics.standardDeviation|number_format(2) }}°C
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <strong>Activation Energy:</strong> {{ dataset.activationEnergy }} kJ/mol
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataset Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">📋 Dataset Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-5"><strong>File Name:</strong></div>
+                        <div class="col-7">{{ dataset.filename }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5"><strong>File Type:</strong></div>
+                        <div class="col-7">
+                            <span class="badge bg-secondary">{{ dataset.fileType|upper }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5"><strong>File Size:</strong></div>
+                        <div class="col-7" v-if="dataset.fileSize">{{ formatFileSize(dataset.fileSize) }}</div>
+                        <div class="col-7" v-else>Unknown</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-5"><strong>Uploaded:</strong></div>
+                        <div class="col-7">{{ dataset.uploadedAt|date('Y-m-d H:i:s') }}</div>
+                    </div>
+                    {% if dataset.startTime and dataset.endTime %}
+                    <div class="row mb-2">
+                        <div class="col-5"><strong>Time Range:</strong></div>
+                        <div class="col-7">
+                            {{ dataset.startTime|date('Y-m-d H:i') }}<br>
+                            <small class="text-muted">to</small><br>
+                            {{ dataset.endTime|date('Y-m-d H:i') }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🧮 MKT Calculation Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Formula:</strong><br>
+                        <code>MKT = -ΔH/R × (1/ln(Σ(e^(-ΔH/R × 1/T_i))/n))</code>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Where:</strong>
+                        <ul class="small mb-0">
+                            <li>ΔH = Activation Energy ({{ dataset.activationEnergy }} kJ/mol)</li>
+                            <li>R = Gas Constant (8.314 J/(mol·K))</li>
+                            <li>T_i = Temperature readings in Kelvin</li>
+                            <li>n = Number of readings ({{ dataset.temperatureReadingsCount ?? 0 }})</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Temperature Readings Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">🔢 Temperature Readings</h5>
+            <small class="text-muted">Showing {{ dataset.temperatureReadings|length }} readings</small>
+        </div>
+        <div class="card-body">
+            {% if dataset.temperatureReadings|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover" id="readingsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Temperature (°C)</th>
+                                <th>Temperature (K)</th>
+                                <th>Unix Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reading in dataset.temperatureReadings|slice(0, 100) %}
+                            <tr>
+                                <td>{{ reading.timestamp|date('Y-m-d H:i:s') }}</td>
+                                <td>{{ reading.temperature|number_format(4) }}</td>
+                                <td>{{ reading.temperatureKelvin|number_format(4) }}</td>
+                                <td>{{ reading.unixTimestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if dataset.temperatureReadings|length > 100 %}
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Showing first 100 readings. 
+                            <a href="{{ path('api_dataset_export', {id: dataset.id}) }}?format=csv">Download CSV</a> 
+                            for complete data.
+                        </small>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-4 text-muted">
+                    No temperature readings found.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+    // Wait for DOM and Vue to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure Vue is loaded
+        if (typeof Vue === 'undefined') {
+            console.error('Vue.js is not loaded');
+            return;
+        }
+        
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    dataset: {
+                        id: {{ dataset.id }},
+                        name: {{ dataset.name|json_encode|raw }},
+                        description: {{ dataset.description|json_encode|raw }},
+                        fileSize: {{ dataset.fileSize }},
+                        mktValue: {{ dataset.mktValue ? dataset.mktValue : 'null' }},
+                        temperatureReadingsCount: {{ dataset.temperatureReadingsCount }},
+                        minTemperature: {{ dataset.minTemperature ? dataset.minTemperature : 'null' }},
+                        maxTemperature: {{ dataset.maxTemperature ? dataset.maxTemperature : 'null' }},
+                        avgTemperature: {{ dataset.avgTemperature ? dataset.avgTemperature : 'null' }}
+                    },
+                    temperatureChart: null
+                }
+            },
+            mounted() {
+                console.log('Vue app mounted. Dataset loaded:', this.dataset);
+                this.initializeChart();
+            },
+            methods: {
+                formatFileSize(bytes) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                },
+                
+                async initializeChart() {
+                    try {
+                        console.log('Initializing chart for dataset ID:', this.dataset.id);
+                        
+                        // Fetch detailed dataset data with temperature readings
+                        const response = await axios.get(`/datasets/api/datasets/${this.dataset.id}`);
+                        const data = response.data;
+                        console.log('Chart data loaded:', data);
+                        
+                        const ctx = document.getElementById('temperatureChart');
+                        if (!ctx) {
+                            console.error('Chart canvas element not found');
+                            return;
+                        }
+                        
+                        const chartContext = ctx.getContext('2d');
+                        
+                        // Prepare chart data
+                        const readings = data.temperatureReadings || [];
+                        console.log('Temperature readings count:', readings.length);
+                        
+                        if (readings.length === 0) {
+                            console.warn('No temperature readings found for chart');
+                            ctx.style.display = 'none';
+                            return;
+                        }
+                        
+                        const labels = readings.map(r => new Date(r.timestamp).toLocaleDateString());
+                        const temperatures = readings.map(r => parseFloat(r.temperature));
+                        
+                        // Sample data if too many points (for better performance)
+                        let chartLabels = labels;
+                        let chartData = temperatures;
+                        
+                        if (readings.length > 100) {
+                            const step = Math.ceil(readings.length / 100);
+                            chartLabels = labels.filter((_, index) => index % step === 0);
+                            chartData = temperatures.filter((_, index) => index % step === 0);
+                        }
+                        
+                        this.temperatureChart = new Chart(chartContext, {
+                            type: 'line',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    label: 'Temperature (°C)',
+                                    data: chartData,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    tension: 0.1,
+                                    pointRadius: readings.length > 50 ? 1 : 3
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        title: {
+                                            display: true,
+                                            text: 'Temperature (°C)'
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Time'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: true
+                                    },
+                                    tooltip: {
+                                        mode: 'index',
+                                        intersect: false
+                                    }
+                                }
+                            }
+                        });
+                        
+                        console.log('Chart initialized successfully');
+                    } catch (error) {
+                        console.error('Error loading chart data:', error);
+                        const chartElement = document.getElementById('temperatureChart');
+                        if (chartElement) {
+                            chartElement.style.display = 'none';
+                            // Show error message
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'alert alert-warning';
+                            errorDiv.innerHTML = 'Unable to load chart data. Please try refreshing the page.';
+                            chartElement.parentNode.insertBefore(errorDiv, chartElement);
+                        }
+                    }
+                }
+            }
+        }).mount('#dataset-detail-app');
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MKT Calculator - Home{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold text-primary mb-4">Mean Kinetic Temperature Calculator</h1>
+            <p class="lead mb-4">
+                Professional tool for calculating Mean Kinetic Temperature (MKT) from temperature data files. 
+                Upload your CSV, XML, JSON, or YAML files and get instant MKT calculations with detailed analysis.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{{ path('app_dataset_upload') }}" class="btn btn-primary btn-lg me-md-2">
+                    📁 Upload Dataset
+                </a>
+                <a href="{{ path('app_dataset_index') }}" class="btn btn-outline-primary btn-lg">
+                    📊 View Datasets
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Info Cards -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-primary mb-3">
+                        <i class="fs-1">🌡️</i>
+                    </div>
+                    <h5 class="card-title">MKT Calculation</h5>
+                    <p class="card-text">
+                        Calculate Mean Kinetic Temperature using the standard pharmaceutical formula with activation energy of 83.144 kJ/mol.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-success mb-3">
+                        <i class="fs-1">📁</i>
+                    </div>
+                    <h5 class="card-title">Multiple Formats</h5>
+                    <p class="card-text">
+                        Support for CSV, XML, JSON, and YAML file formats with intelligent data parsing and validation.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-info mb-3">
+                        <i class="fs-1">📈</i>
+                    </div>
+                    <h5 class="card-title">Data Visualization</h5>
+                    <p class="card-text">
+                        Interactive charts and graphs to visualize temperature trends and statistical analysis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-3">
+            <div class="card stats-card text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Datasets</h5>
+                    <h2 class="display-6 fw-bold">{{ total_datasets }}</h2>
+                    <p class="card-text opacity-75">Datasets uploaded and processed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">API Endpoints</h5>
+                    <h2 class="display-6 fw-bold">{{ recent_datasets|length > 0 ? 'Active' : 'Ready' }}</h2>
+                    <p class="card-text opacity-75">RESTful API for programmatic access</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Datasets -->
+    {% if recent_datasets|length > 0 %}
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">Recent Datasets</h3>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>File Type</th>
+                            <th>Readings</th>
+                            <th>MKT Value</th>
+                            <th>Uploaded</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dataset in recent_datasets %}
+                        <tr>
+                            <td>
+                                <strong>{{ dataset.name }}</strong>
+                                {% if dataset.description %}
+                                    <br><small class="text-muted">{{ dataset.description }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ dataset.fileType|upper }}</span>
+                            </td>
+                            <td>{{ dataset.temperatureReadingsCount ?? 0 }}</td>
+                            <td>
+                                {% if dataset.mktValue %}
+                                    <span class="mkt-highlight">{{ dataset.mktValue|number_format(4) }}°C</span>
+                                {% else %}
+                                    <span class="text-muted">Not calculated</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ dataset.uploadedAt|date('M j, Y') }}</td>
+                            <td>
+                                <a href="{{ path('app_dataset_show', {id: dataset.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <a href="{{ path('app_dataset_index') }}" class="btn btn-outline-primary">
+                    View All Datasets →
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fs-1 text-muted mb-3">📂</i>
+                <h4 class="text-muted">No datasets uploaded yet</h4>
+                <p class="text-muted">Upload your first temperature dataset to get started with MKT calculations.</p>
+                <a href="{{ path('app_dataset_upload') }}" class="btn btn-primary">
+                    Upload Your First Dataset
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- API Information -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">API Access</h5>
+                    <p class="card-text">
+                        Access your data programmatically with our RESTful API endpoints:
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><code>GET /datasets/api/datasets</code> - List all datasets</li>
+                                <li><code>GET /datasets/api/datasets/{id}</code> - Get dataset details</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><code>POST /datasets/api/calculate-mkt</code> - Calculate MKT</li>
+                                <li><code>GET /datasets/api/datasets/{id}/export</code> - Export data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

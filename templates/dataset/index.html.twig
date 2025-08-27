@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Datasets - MKT Calculator{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📊 Temperature Datasets</h2>
+        <a href="{{ path('app_dataset_upload') }}" class="btn btn-primary">
+            📁 Upload New Dataset
+        </a>
+    </div>
+
+    {% if datasets|length > 0 %}
+        <div class="row">
+            {% for dataset in datasets %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-header bg-transparent">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="mb-0 text-truncate me-2">{{ dataset.name }}</h6>
+                                <span class="badge bg-secondary">{{ dataset.fileType|upper }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if dataset.description %}
+                                <p class="text-muted small mb-2">
+                                    {{ dataset.description|length > 100 ? dataset.description|slice(0, 100) ~ '...' : dataset.description }}
+                                </p>
+                            {% endif %}
+                            
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="text-primary fw-bold">{{ dataset.temperatureReadingsCount|default(0) }}</div>
+                                    <small class="text-muted">Readings</small>
+                                </div>
+                                <div class="col-8">
+                                    {% if dataset.mktValue %}
+                                        <div class="mkt-highlight">
+                                            {{ dataset.mktValue|number_format(4) }}°C
+                                        </div>
+                                    {% else %}
+                                        <div class="text-muted">Not calculated</div>
+                                    {% endif %}
+                                    <small class="text-muted">MKT Value</small>
+                                </div>
+                            </div>
+
+                            <div class="small text-muted mb-3">
+                                {% if dataset.minTemperature and dataset.maxTemperature %}
+                                    <div>
+                                        Range: {{ dataset.minTemperature|number_format(1) }}°C to {{ dataset.maxTemperature|number_format(1) }}°C
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    Uploaded: {{ dataset.uploadedAt|date('M j, Y') }}
+                                </div>
+                                {% if dataset.fileSize %}
+                                    <div>
+                                        Size: {{ (dataset.fileSize / 1024)|number_format(2) }} KB
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-grid gap-2 d-md-flex">
+                                <a href="{{ path('app_dataset_show', {id: dataset.id}) }}" 
+                                   class="btn btn-primary btn-sm flex-grow-1">
+                                    View Details
+                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                            type="button" data-bs-toggle="dropdown">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" 
+                                               href="/api/datasets/{{ dataset.id }}/export?format=csv">
+                                                📊 Export CSV
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" 
+                                               href="/api/datasets/{{ dataset.id }}/export?format=json">
+                                                📋 Export JSON
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="post" 
+                                                  action="{{ path('app_dataset_delete', {id: dataset.id}) }}"
+                                                  onsubmit="return confirm('Are you sure you want to delete this dataset? This action cannot be undone.')">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    🗑️ Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <i class="fs-1 text-muted mb-4">📂</i>
+            <h3 class="text-muted">No datasets uploaded yet</h3>
+            <p class="text-muted mb-4">
+                Upload your first temperature dataset to start calculating Mean Kinetic Temperature values.
+            </p>
+            <a href="{{ path('app_dataset_upload') }}" class="btn btn-primary btn-lg">
+                📁 Upload Your First Dataset
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

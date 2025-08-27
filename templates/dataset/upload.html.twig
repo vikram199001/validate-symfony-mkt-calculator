@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Upload Dataset - MKT Calculator{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">📁 Upload Temperature Dataset</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Upload your temperature data file to calculate Mean Kinetic Temperature. 
+                        Supported formats: CSV, XML, JSON, YAML (max 10MB).
+                    </p>
+
+                    <form method="post" enctype="multipart/form-data">
+                        <!-- Dataset Information -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Dataset Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       required placeholder="Enter a descriptive name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="description" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="description" name="description" 
+                                       placeholder="Optional description">
+                            </div>
+                        </div>
+
+                        <!-- File Upload Zone -->
+                        <div class="mb-4">
+                            <label for="file" class="form-label">Select File *</label>
+                            <input type="file" class="form-control" id="file" name="file" 
+                                   accept=".csv,.xml,.json,.yml,.yaml" required>
+                            <div class="form-text">
+                                Supported formats: CSV, XML, JSON, YAML<br>
+                                Maximum file size: 10MB
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('app_dataset_index') }}" class="btn btn-outline-secondary">
+                                ← Back to Datasets
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                📊 Upload & Calculate MKT
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

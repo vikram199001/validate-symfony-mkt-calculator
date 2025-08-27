@@ -1,0 +1,49 @@
+readings:
+    - timestamp: "2024-01-01 00:00:00"
+      temperature: 25.1
+    - timestamp: "2024-01-01 01:00:00"
+      temperature: 24.8
+    - timestamp: "2024-01-01 02:00:00"
+      temperature: 24.5
+    - timestamp: "2024-01-01 03:00:00"
+      temperature: 24.2
+    - timestamp: "2024-01-01 04:00:00"
+      temperature: 24.0
+    - timestamp: "2024-01-01 05:00:00"
+      temperature: 23.8
+    - timestamp: "2024-01-01 06:00:00"
+      temperature: 24.1
+    - timestamp: "2024-01-01 07:00:00"
+      temperature: 24.5
+    - timestamp: "2024-01-01 08:00:00"
+      temperature: 25.2
+    - timestamp: "2024-01-01 09:00:00"
+      temperature: 26.1
+    - timestamp: "2024-01-01 10:00:00"
+      temperature: 27.3
+    - timestamp: "2024-01-01 11:00:00"
+      temperature: 28.5
+    - timestamp: "2024-01-01 12:00:00"
+      temperature: 29.2
+    - timestamp: "2024-01-01 13:00:00"
+      temperature: 29.8
+    - timestamp: "2024-01-01 14:00:00"
+      temperature: 30.1
+    - timestamp: "2024-01-01 15:00:00"
+      temperature: 30.5
+    - timestamp: "2024-01-01 16:00:00"
+      temperature: 30.2
+    - timestamp: "2024-01-01 17:00:00"
+      temperature: 29.7
+    - timestamp: "2024-01-01 18:00:00"
+      temperature: 28.9
+    - timestamp: "2024-01-01 19:00:00"
+      temperature: 27.8
+    - timestamp: "2024-01-01 20:00:00"
+      temperature: 26.5
+    - timestamp: "2024-01-01 21:00:00"
+      temperature: 25.8
+    - timestamp: "2024-01-01 22:00:00"
+      temperature: 25.3
+    - timestamp: "2024-01-01 23:00:00"
+      temperature: 25.0
